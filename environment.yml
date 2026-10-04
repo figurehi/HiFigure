@@ -1,0 +1,26 @@
+# HiFigure: Python backend + Node frontend in one env.
+# From repo root:
+#   conda env create -f environment.yml
+#   conda activate hifigure
+# Backend: cd backend && uvicorn app.main:app --reload
+# Frontend: cd frontend && npm install && npm run dev
+name: hifigure
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - nodejs=22
+  - pip
+  # Retrieval module — faiss-cpu from conda-forge is faster to resolve than pip
+  - faiss-cpu>=1.8.0
+  - numpy>=1.24.0
+  - tqdm>=4.66.0
+  - pip:
+      - -e ./backend
+      - requests>=2.31.0
+      # jina-embeddings-v3 encoder and its Hugging Face remote model code.
+      - torch>=2.2.0
+      # jina-embeddings-v3's pinned remote code still uses the Transformers 4.x model API.
+      - transformers>=4.45.0,<5.0.0
+      - tokenizers>=0.20.0
+      - einops>=0.8.0

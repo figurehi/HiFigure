@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Keyword-only scientific figure search for the Baseline study condition." />
+    <title>FigureFind — Baseline Search</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div id="session-gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+      <form id="session-form" class="gate-card">
+        <div class="brand-mark" aria-hidden="true">F</div>
+        <p class="eyebrow">Baseline study tool</p>
+        <h1 id="gate-title">Scientific figure search</h1>
+        <p class="gate-copy">
+          Search the fixed figure collection using keywords, then collect the references you may want to use with GPT.
+        </p>
+        <label class="field-label" for="participant-id">Participant ID</label>
+        <input
+          id="participant-id"
+          name="participantId"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          maxlength="64"
+          pattern="[A-Za-z0-9_-]{2,64}"
+          placeholder="e.g. P07"
+          required
+          autofocus
+        />
+        <p id="participant-error" class="field-error" aria-live="polite"></p>
+        <button class="primary-button" type="submit">Enter search</button>
+        <p class="privacy-note">Only your participant ID and interactions in this tool are recorded.</p>
+      </form>
+    </div>
+
+    <div id="app" class="app-shell" hidden>
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="FigureFind home">
+          <span class="brand-mark brand-mark-small" aria-hidden="true">F</span>
+          <span>
+            <strong>FigureFind</strong>
+            <small>Keyword Search</small>
+          </span>
+        </a>
+        <div class="session-state">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Baseline session active</span>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="search-hero" aria-labelledby="search-title">
+          <div class="hero-copy">
+            <p class="eyebrow">Fixed corpus · literal keyword ranking</p>
+            <h1 id="search-title">Find a reference figure</h1>
+            <p>Use content, method, or visual keywords. Results are ranked only by matching words.</p>
+          </div>
+          <form id="search-form" class="search-form" role="search">
+            <label class="sr-only" for="search-input">Search scientific figures</label>
+            <span class="search-symbol" aria-hidden="true"></span>
+            <input
+              id="search-input"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              maxlength="500"
+              placeholder="Try: language agent planning workflow"
+              required
+            />
+            <button type="submit">Search</button>
+          </form>
+          <div class="example-row" aria-label="Example searches">
+            <span>Examples</span>
+            <button type="button" data-query="agent planning workflow">agent planning workflow</button>
+            <button type="button" data-query="multimodal model architecture">multimodal architecture</button>
+            <button type="button" data-query="training pipeline">training pipeline</button>
+          </div>
+        </section>
+
+        <section class="workspace">
+          <div class="results-column">
+            <div class="results-toolbar">
+              <div>
+                <h2 id="results-heading">Search results</h2>
+                <p id="results-summary" aria-live="polite">Enter keywords to search the figure collection.</p>
+              </div>
+              <span class="method-badge" title="No semantic model or query expansion is used">BM25 keyword</span>
+            </div>
+
+            <div id="empty-state" class="empty-state">
+              <div class="empty-illustration" aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+              <h3>Start with the language of your method</h3>
+              <p>Combine a topic and a figure type, such as “agent workflow” or “vision transformer architecture”.</p>
+            </div>
+
+            <div id="loading-state" class="loading-grid" hidden aria-label="Loading results">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+            <div id="error-state" class="error-state" hidden role="alert"></div>
+            <div id="results-grid" class="results-grid" aria-labelledby="results-heading"></div>
+
+            <nav id="pagination" class="pagination" aria-label="Search result pages" hidden>
+              <button id="previous-page" type="button">Previous</button>
+              <span id="page-label"></span>
+              <button id="next-page" type="button">Next</button>
+            </nav>
+          </div>
+
+          <aside class="selection-panel" aria-labelledby="selection-title">
+            <div class="selection-header">
+              <div>
+                <p class="eyebrow">For GPT</p>
+                <h2 id="selection-title">Selected references</h2>
+              </div>
+              <span id="selection-count" class="selection-count">0 selected</span>
+            </div>
+            <p class="selection-help">Collect and download multiple images, then decide which ones to upload to the provided GPT session.</p>
+            <div id="selection-list" class="selection-list"></div>
+            <div id="selection-empty" class="selection-empty">
+              <span aria-hidden="true">＋</span>
+              <p>Your selected figures will appear here.</p>
+            </div>
+            <button id="download-all" class="primary-button download-all" type="button" disabled>
+              Download selected
+            </button>
+            <p id="download-status" class="download-status" aria-live="polite"></p>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="preview-dialog" class="preview-dialog">
+      <button id="close-preview" class="dialog-close" type="button" aria-label="Close preview">×</button>
+      <div class="preview-image-wrap">
+        <img id="preview-image" alt="" />
+      </div>
+      <div class="preview-details">
+        <p id="preview-type" class="eyebrow"></p>
+        <h2 id="preview-title"></h2>
+        <p id="preview-source" class="preview-source"></p>
+        <p id="preview-caption" class="preview-caption"></p>
+        <div id="preview-terms" class="term-list"></div>
+        <div class="preview-actions">
+          <button id="preview-select" class="primary-button" type="button"></button>
+          <button id="preview-download" class="secondary-button" type="button">Download image</button>
+        </div>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script src="./app.js" defer></script>
+  </body>
+</html>

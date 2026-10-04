@@ -1,0 +1,84 @@
+.backdrop {
+  position: fixed;
+  z-index: 1800;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: color-mix(in srgb, #111827 54%, transparent);
+  backdrop-filter: blur(7px);
+}
+
+.dialog {
+  display: grid;
+  width: min(1120px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  gap: 24px;
+  padding: 32px;
+  overflow: auto;
+  border: 1px solid var(--rule-strong);
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 24px 70px rgb(15 23 42 / 34%);
+}
+
+.header {
+  display: grid;
+}
+
+.header h2 {
+  margin: 0;
+}
+
+.header h2 {
+  color: var(--ink-strong);
+  font-size: 20px;
+  letter-spacing: -0.02em;
+}
+
+.field {
+  display: grid;
+  gap: 7px;
+}
+
+.field > span {
+  color: var(--ink-strong);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.field textarea {
+  width: 100%;
+  min-height: 360px;
+  height: clamp(360px, 52dvh, 540px);
+  max-height: 62dvh;
+  resize: vertical;
+  padding: 16px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.field textarea:focus {
+  border-color: var(--accent);
+  outline: 3px solid color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+
+@media (max-width: 620px) {
+  .backdrop { padding: 12px; }
+  .dialog { padding: 16px; }
+  .field textarea { min-height: 240px; }
+  .actions > button { flex: 1; }
+}

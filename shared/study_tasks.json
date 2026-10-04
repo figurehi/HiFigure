@@ -1,0 +1,479 @@
+{
+  "schemaVersion": 1,
+  "tasks": [
+    {
+      "version": "nlp-route-fuse-rag-v2",
+      "category": "NLP",
+      "topic": "Cross-modal multi-granularity RAG",
+      "title": "RouteFuse-RAG: Adaptive Cross-modal Evidence Routing",
+      "audience": "Readers of a two-column NLP or LLM systems paper",
+      "methodOverview": "A query-aware RAG system selects text, page-region, and table/figure retrievers, merges their evidence into a cited context, and returns an answer only when its claims are supported.",
+      "modules": [
+        {
+          "id": "query_router",
+          "title": "Query Router",
+          "purpose": "Choose evidence sources and a top-k budget from the query.",
+          "components": [
+            "modality and granularity analyzer",
+            "expert gate",
+            "budget allocator"
+          ],
+          "steps": [
+            "extract retrieval cues",
+            "output active experts and top-k values"
+          ]
+        },
+        {
+          "id": "retrieval_bank",
+          "title": "Retrieval Bank",
+          "purpose": "Search the selected sources and preserve provenance.",
+          "components": [
+            "passage retriever",
+            "page-region retriever",
+            "table/figure retriever"
+          ],
+          "steps": [
+            "search each active index",
+            "return ranked evidence with source IDs"
+          ]
+        },
+        {
+          "id": "evidence_builder",
+          "title": "Evidence Builder",
+          "purpose": "Produce one compact, non-redundant cited context.",
+          "components": [
+            "cross-modal reranker",
+            "deduplicator",
+            "citation packer"
+          ],
+          "steps": [
+            "rerank and merge candidates",
+            "pack evidence with citation IDs"
+          ]
+        },
+        {
+          "id": "answer_guard",
+          "title": "Answer Guard",
+          "purpose": "Generate the answer and enforce claim support.",
+          "components": [
+            "answer generator",
+            "support checker",
+            "repair and abstention gate"
+          ],
+          "steps": [
+            "draft and check cited claims",
+            "return, repair retrieval once, or abstain"
+          ]
+        }
+      ],
+      "flow": [
+        "The Query Router outputs active retrievers and top-k values.",
+        "The Retrieval Bank returns sourced candidates, and the Evidence Builder turns them into a cited context.",
+        "The Answer Guard returns a supported answer; otherwise it requests one retrieval repair and then abstains if support is still insufficient."
+      ],
+      "prompt": "METHOD OVERVIEW\nA query-aware RAG system selects text, page-region, and table/figure retrievers, merges their evidence into a cited context, and returns an answer only when its claims are supported.\n\nREQUIRED MODULES\n1. Query Router: Choose evidence sources and a top-k budget from the query. Components: modality and granularity analyzer, expert gate, budget allocator.\n2. Retrieval Bank: Search the selected sources and preserve provenance. Components: passage retriever, page-region retriever, table/figure retriever.\n3. Evidence Builder: Produce one compact, non-redundant cited context. Components: cross-modal reranker, deduplicator, citation packer.\n4. Answer Guard: Generate the answer and enforce claim support. Components: answer generator, support checker, repair and abstention gate.\n\nMODULE INTERNALS AND STEPS\nQuery Router: extract retrieval cues -> output active experts and top-k values.\nRetrieval Bank: search each active index -> return ranked evidence with source IDs.\nEvidence Builder: rerank and merge candidates -> pack evidence with citation IDs.\nAnswer Guard: draft and check cited claims -> return, repair retrieval once, or abstain.\n\nEND-TO-END METHOD\n1. The Query Router outputs active retrievers and top-k values.\n2. The Retrieval Bank returns sourced candidates, and the Evidence Builder turns them into a cited context.\n3. The Answer Guard returns a supported answer; otherwise it requests one retrieval repair and then abstains if support is still insufficient.",
+      "requirements": [
+        "Output active retrieval experts and their top-k values.",
+        "Retrieve passage, page-region, and table/figure evidence with source IDs.",
+        "Rerank and deduplicate evidence before building the cited context.",
+        "Return only supported claims, with one retrieval repair allowed before abstention."
+      ],
+      "cardSummary": "This system finds the right evidence in text and images, then checks that every answer is properly supported."
+    },
+    {
+      "version": "nlp-plan-exec-agent-v2",
+      "category": "NLP",
+      "topic": "Planner-executor tool agent",
+      "title": "PlanExec-Agent: Decoupled Planning and Tool Execution",
+      "audience": "Readers of a two-column NLP, agent, or LLM systems paper",
+      "methodOverview": "A modular LLM agent turns an objective into an ordered plan, binds ready steps to valid tool calls, records tool results in shared state, and performs one bounded repair before answering.",
+      "modules": [
+        {
+          "id": "grounded_planner",
+          "title": "Grounded Planner",
+          "purpose": "Create an ordered plan from the objective, constraints, and tool registry.",
+          "components": [
+            "constraint extractor",
+            "subgoal graph",
+            "tool capability index"
+          ],
+          "steps": [
+            "extract constraints and available capabilities",
+            "output dependency-ordered subgoals"
+          ]
+        },
+        {
+          "id": "tool_executor",
+          "title": "Tool Executor",
+          "purpose": "Bind each ready subgoal to a safe, schema-valid call.",
+          "components": [
+            "tool selector",
+            "schema validator",
+            "controlled runtime"
+          ],
+          "steps": [
+            "select and validate a tool call",
+            "execute it and record status"
+          ]
+        },
+        {
+          "id": "observation_memory",
+          "title": "Observation Memory",
+          "purpose": "Convert tool outputs into reusable state with provenance.",
+          "components": [
+            "result normalizer",
+            "working memory",
+            "provenance ledger"
+          ],
+          "steps": [
+            "normalize the tool result",
+            "update state with source and status"
+          ]
+        },
+        {
+          "id": "verifier_synthesizer",
+          "title": "Verifier and Synthesizer",
+          "purpose": "Check goal coverage and produce the final response.",
+          "components": [
+            "goal checker",
+            "repair gate",
+            "response synthesizer"
+          ],
+          "steps": [
+            "compare completed state with the plan",
+            "repair one failed subgoal or synthesize the response"
+          ]
+        }
+      ],
+      "flow": [
+        "The Grounded Planner outputs dependency-ordered subgoals.",
+        "For each ready subgoal, the Tool Executor records a validated result in Observation Memory.",
+        "The Verifier and Synthesizer repairs at most one failed subgoal, then returns the response or reports the unresolved failure."
+      ],
+      "prompt": "METHOD OVERVIEW\nA modular LLM agent turns an objective into an ordered plan, binds ready steps to valid tool calls, records tool results in shared state, and performs one bounded repair before answering.\n\nREQUIRED MODULES\n1. Grounded Planner: Create an ordered plan from the objective, constraints, and tool registry. Components: constraint extractor, subgoal graph, tool capability index.\n2. Tool Executor: Bind each ready subgoal to a safe, schema-valid call. Components: tool selector, schema validator, controlled runtime.\n3. Observation Memory: Convert tool outputs into reusable state with provenance. Components: result normalizer, working memory, provenance ledger.\n4. Verifier and Synthesizer: Check goal coverage and produce the final response. Components: goal checker, repair gate, response synthesizer.\n\nMODULE INTERNALS AND STEPS\nGrounded Planner: extract constraints and available capabilities -> output dependency-ordered subgoals.\nTool Executor: select and validate a tool call -> execute it and record status.\nObservation Memory: normalize the tool result -> update state with source and status.\nVerifier and Synthesizer: compare completed state with the plan -> repair one failed subgoal or synthesize the response.\n\nEND-TO-END METHOD\n1. The Grounded Planner outputs dependency-ordered subgoals.\n2. For each ready subgoal, the Tool Executor records a validated result in Observation Memory.\n3. The Verifier and Synthesizer repairs at most one failed subgoal, then returns the response or reports the unresolved failure.",
+      "requirements": [
+        "Output dependency-ordered subgoals from the objective and constraints.",
+        "Validate each tool and its arguments before execution.",
+        "Record normalized results, statuses, and provenance in shared state.",
+        "Check goal coverage and allow at most one targeted repair before responding."
+      ],
+      "cardSummary": "This agent breaks a difficult request into manageable steps, uses the right tools, and fixes mistakes before answering."
+    },
+    {
+      "version": "cv-vlm-diffusion-bridge-v2",
+      "category": "CV",
+      "topic": "VLM-guided diffusion bridge",
+      "title": "SemBridge: Semantic-Spatial Conditioning for Diffusion",
+      "audience": "Readers of a two-column computer vision or multimodal generation paper",
+      "methodOverview": "A frozen vision-language model extracts entities, attributes, relations, and coarse positions; a bridge injects these signals into matching diffusion scales, while a training-only critic scores semantic and spatial agreement.",
+      "modules": [
+        {
+          "id": "semantic_parser",
+          "title": "Multimodal Semantic Parser",
+          "purpose": "Convert text and an optional image into structured generation signals.",
+          "components": [
+            "text-image encoder",
+            "entity and attribute parser",
+            "relation and position parser"
+          ],
+          "steps": [
+            "encode the available modalities",
+            "output entities, attributes, relations, and coarse positions"
+          ]
+        },
+        {
+          "id": "condition_bridge",
+          "title": "Semantic-Spatial Bridge",
+          "purpose": "Map parsed signals to diffusion-compatible controls.",
+          "components": [
+            "semantic projector",
+            "spatial encoder",
+            "scale adapter"
+          ],
+          "steps": [
+            "project semantic and spatial signals",
+            "assign them to coarse, middle, or fine scales"
+          ]
+        },
+        {
+          "id": "diffusion_generator",
+          "title": "Conditioned Diffusion Generator",
+          "purpose": "Generate an image using scale-matched controls.",
+          "components": [
+            "denoising backbone",
+            "condition injectors",
+            "image decoder"
+          ],
+          "steps": [
+            "inject controls at their assigned scales",
+            "denoise and decode the image"
+          ]
+        },
+        {
+          "id": "consistency_critic",
+          "title": "Training Consistency Critic",
+          "purpose": "Supervise semantic and spatial fidelity during training only.",
+          "components": [
+            "semantic score",
+            "spatial score",
+            "consistency loss"
+          ],
+          "steps": [
+            "compare the generated image with parsed signals",
+            "return the combined training loss"
+          ]
+        }
+      ],
+      "flow": [
+        "The Multimodal Semantic Parser outputs entities, attributes, relations, and coarse positions.",
+        "The Semantic-Spatial Bridge assigns these signals to matching diffusion scales, and the generator produces the image.",
+        "During training only, the Consistency Critic returns semantic and spatial loss to update the bridge and generator."
+      ],
+      "prompt": "METHOD OVERVIEW\nA frozen vision-language model extracts entities, attributes, relations, and coarse positions; a bridge injects these signals into matching diffusion scales, while a training-only critic scores semantic and spatial agreement.\n\nREQUIRED MODULES\n1. Multimodal Semantic Parser: Convert text and an optional image into structured generation signals. Components: text-image encoder, entity and attribute parser, relation and position parser.\n2. Semantic-Spatial Bridge: Map parsed signals to diffusion-compatible controls. Components: semantic projector, spatial encoder, scale adapter.\n3. Conditioned Diffusion Generator: Generate an image using scale-matched controls. Components: denoising backbone, condition injectors, image decoder.\n4. Training Consistency Critic: Supervise semantic and spatial fidelity during training only. Components: semantic score, spatial score, consistency loss.\n\nMODULE INTERNALS AND STEPS\nMultimodal Semantic Parser: encode the available modalities -> output entities, attributes, relations, and coarse positions.\nSemantic-Spatial Bridge: project semantic and spatial signals -> assign them to coarse, middle, or fine scales.\nConditioned Diffusion Generator: inject controls at their assigned scales -> denoise and decode the image.\nTraining Consistency Critic: compare the generated image with parsed signals -> return the combined training loss.\n\nEND-TO-END METHOD\n1. The Multimodal Semantic Parser outputs entities, attributes, relations, and coarse positions.\n2. The Semantic-Spatial Bridge assigns these signals to matching diffusion scales, and the generator produces the image.\n3. During training only, the Consistency Critic returns semantic and spatial loss to update the bridge and generator.",
+      "requirements": [
+        "Output entities, attributes, relations, and coarse positions from the available inputs.",
+        "Map parsed signals to coarse, middle, or fine diffusion controls.",
+        "Inject every control at its assigned denoising scale.",
+        "Use semantic and spatial consistency loss during training only."
+      ],
+      "cardSummary": "This method turns language and visual cues into structured controls that guide image generation at several scales."
+    },
+    {
+      "version": "cv-active-view-vla-v2",
+      "category": "CV",
+      "topic": "Active perception for VLA agents",
+      "title": "ActiveView-VLA: Uncertainty-guided Embodied Perception",
+      "audience": "Readers of a two-column computer vision, robotics, or embodied AI paper",
+      "methodOverview": "A vision-language-action agent tracks objects and uncertainty, selects one feasible viewpoint with the highest expected information gain, updates memory from the new observation, and executes a safety-checked task action.",
+      "modules": [
+        {
+          "id": "scene_memory",
+          "title": "Instruction-aware Scene Memory",
+          "purpose": "Maintain object, temporal, and uncertainty state from language and vision.",
+          "components": [
+            "language-vision encoder",
+            "object memory",
+            "uncertainty map"
+          ],
+          "steps": [
+            "fuse the instruction and current observation",
+            "update objects and uncertain regions"
+          ]
+        },
+        {
+          "id": "view_controller",
+          "title": "Active View Controller",
+          "purpose": "Acquire the feasible view with the largest expected uncertainty reduction.",
+          "components": [
+            "candidate-view sampler",
+            "information-gain scorer",
+            "feasibility mask"
+          ],
+          "steps": [
+            "score feasible views under the sensing budget",
+            "execute the highest-scoring view"
+          ]
+        },
+        {
+          "id": "evidence_integrator",
+          "title": "Evidence Integrator",
+          "purpose": "Merge the refreshed observation into persistent state.",
+          "components": [
+            "observation aligner",
+            "memory updater",
+            "confidence updater"
+          ],
+          "steps": [
+            "align the new observation with stored objects",
+            "update memory and confidence"
+          ]
+        },
+        {
+          "id": "task_policy",
+          "title": "Safe Task Policy",
+          "purpose": "Choose and validate the embodied task action.",
+          "components": [
+            "language-conditioned policy",
+            "action head",
+            "safety checker"
+          ],
+          "steps": [
+            "propose an action from updated memory",
+            "execute it only if the safety check passes"
+          ]
+        }
+      ],
+      "flow": [
+        "Instruction-aware Scene Memory identifies objects and uncertain regions.",
+        "The Active View Controller acquires the feasible view with maximum expected information gain, and the Evidence Integrator updates memory.",
+        "The Safe Task Policy executes an action only after the safety check passes."
+      ],
+      "prompt": "METHOD OVERVIEW\nA vision-language-action agent tracks objects and uncertainty, selects one feasible viewpoint with the highest expected information gain, updates memory from the new observation, and executes a safety-checked task action.\n\nREQUIRED MODULES\n1. Instruction-aware Scene Memory: Maintain object, temporal, and uncertainty state from language and vision. Components: language-vision encoder, object memory, uncertainty map.\n2. Active View Controller: Acquire the feasible view with the largest expected uncertainty reduction. Components: candidate-view sampler, information-gain scorer, feasibility mask.\n3. Evidence Integrator: Merge the refreshed observation into persistent state. Components: observation aligner, memory updater, confidence updater.\n4. Safe Task Policy: Choose and validate the embodied task action. Components: language-conditioned policy, action head, safety checker.\n\nMODULE INTERNALS AND STEPS\nInstruction-aware Scene Memory: fuse the instruction and current observation -> update objects and uncertain regions.\nActive View Controller: score feasible views under the sensing budget -> execute the highest-scoring view.\nEvidence Integrator: align the new observation with stored objects -> update memory and confidence.\nSafe Task Policy: propose an action from updated memory -> execute it only if the safety check passes.\n\nEND-TO-END METHOD\n1. Instruction-aware Scene Memory identifies objects and uncertain regions.\n2. The Active View Controller acquires the feasible view with maximum expected information gain, and the Evidence Integrator updates memory.\n3. The Safe Task Policy executes an action only after the safety check passes.",
+      "requirements": [
+        "Maintain object, temporal, and uncertainty state from language and vision.",
+        "Choose the feasible view with maximum expected information gain under the sensing budget.",
+        "Align the refreshed observation and update memory confidence.",
+        "Execute the task action only after its safety check passes."
+      ],
+      "cardSummary": "This agent looks where information is missing, updates its scene understanding, and then acts more safely."
+    },
+    {
+      "version": "rl-dream-curriculum-v2",
+      "category": "RL / ML",
+      "topic": "Synthetic experience for agent learning",
+      "title": "DreamCurriculum-RL: Curated Synthetic Experience for LLM Agents",
+      "audience": "Readers of a two-column reinforcement learning, agents, or LLM training paper",
+      "methodOverview": "An agent-training loop creates skill-targeted tasks, collects simulated trajectories with the current policy, filters invalid or redundant experience, updates the policy, and sets the next task difficulty from held-out evaluation.",
+      "modules": [
+        {
+          "id": "curriculum_designer",
+          "title": "Curriculum Designer",
+          "purpose": "Generate task specifications for selected skills and difficulty.",
+          "components": [
+            "skill inventory",
+            "task synthesizer",
+            "difficulty controller"
+          ],
+          "steps": [
+            "select target skills and difficulty",
+            "output task specifications with constraints"
+          ]
+        },
+        {
+          "id": "simulation_rollout",
+          "title": "Simulation and Rollout",
+          "purpose": "Collect synthetic trajectories with the current policy.",
+          "components": [
+            "world and user simulator",
+            "current policy",
+            "trajectory buffer"
+          ],
+          "steps": [
+            "simulate responses to policy actions",
+            "store complete trajectories"
+          ]
+        },
+        {
+          "id": "experience_curator",
+          "title": "Experience Curator",
+          "purpose": "Keep valid, distinct, and balanced trajectories.",
+          "components": [
+            "validity filter",
+            "deduplicator",
+            "skill and difficulty balancer"
+          ],
+          "steps": [
+            "reject invalid and duplicate trajectories",
+            "balance retained data by skill and difficulty"
+          ]
+        },
+        {
+          "id": "learning_controller",
+          "title": "Learning and Evaluation Controller",
+          "purpose": "Update the policy and choose the next curriculum settings.",
+          "components": [
+            "outcome judge",
+            "policy optimizer",
+            "held-out skill evaluator"
+          ],
+          "steps": [
+            "score curated trajectories and update the policy",
+            "set next-round skills and difficulty from evaluation gaps"
+          ]
+        }
+      ],
+      "flow": [
+        "The Curriculum Designer outputs skill- and difficulty-controlled task specifications.",
+        "Simulation and Rollout collects trajectories, and the Experience Curator returns a valid, distinct, balanced training set.",
+        "The Learning and Evaluation Controller updates the policy and feeds measured skill gaps into the next curriculum round."
+      ],
+      "prompt": "METHOD OVERVIEW\nAn agent-training loop creates skill-targeted tasks, collects simulated trajectories with the current policy, filters invalid or redundant experience, updates the policy, and sets the next task difficulty from held-out evaluation.\n\nREQUIRED MODULES\n1. Curriculum Designer: Generate task specifications for selected skills and difficulty. Components: skill inventory, task synthesizer, difficulty controller.\n2. Simulation and Rollout: Collect synthetic trajectories with the current policy. Components: world and user simulator, current policy, trajectory buffer.\n3. Experience Curator: Keep valid, distinct, and balanced trajectories. Components: validity filter, deduplicator, skill and difficulty balancer.\n4. Learning and Evaluation Controller: Update the policy and choose the next curriculum settings. Components: outcome judge, policy optimizer, held-out skill evaluator.\n\nMODULE INTERNALS AND STEPS\nCurriculum Designer: select target skills and difficulty -> output task specifications with constraints.\nSimulation and Rollout: simulate responses to policy actions -> store complete trajectories.\nExperience Curator: reject invalid and duplicate trajectories -> balance retained data by skill and difficulty.\nLearning and Evaluation Controller: score curated trajectories and update the policy -> set next-round skills and difficulty from evaluation gaps.\n\nEND-TO-END METHOD\n1. The Curriculum Designer outputs skill- and difficulty-controlled task specifications.\n2. Simulation and Rollout collects trajectories, and the Experience Curator returns a valid, distinct, balanced training set.\n3. The Learning and Evaluation Controller updates the policy and feeds measured skill gaps into the next curriculum round.",
+      "requirements": [
+        "Generate task specifications with explicit target skills and difficulty.",
+        "Collect complete simulated trajectories with the current policy.",
+        "Filter invalid and duplicate data, then balance skill and difficulty coverage.",
+        "Use held-out skill gaps to set the next curriculum round."
+      ],
+      "cardSummary": "This training loop invents useful practice tasks, filters weak experiences, and raises difficulty as the agent improves."
+    },
+    {
+      "version": "ml-cognitive-reasoner-mixture-v2",
+      "category": "RL / ML",
+      "topic": "Mixture of cognitive reasoners",
+      "title": "CognitiveRouter: A Mixture of Specialized LLM Reasoners",
+      "audience": "Readers of a two-column machine learning, reasoning, or LLM systems paper",
+      "methodOverview": "A meta-controller splits a problem and routes each part to analytic, retrieval, tool/simulation, or reflective reasoners; a shared workspace combines sourced proposals, and a verifier permits one targeted reroute before answering.",
+      "modules": [
+        {
+          "id": "meta_controller",
+          "title": "Cognitive Meta-controller",
+          "purpose": "Decompose the problem and assign compute-limited reasoning routes.",
+          "components": [
+            "subproblem decomposer",
+            "reasoner gate",
+            "compute scheduler"
+          ],
+          "steps": [
+            "form subproblems and estimate their demands",
+            "output reasoner assignments and round budgets"
+          ]
+        },
+        {
+          "id": "reasoner_pool",
+          "title": "Specialized Reasoner Pool",
+          "purpose": "Produce complementary proposals for routed subproblems.",
+          "components": [
+            "analytic reasoner",
+            "retrieval reasoner",
+            "tool/simulation and reflective reasoners"
+          ],
+          "steps": [
+            "run each assigned reasoner",
+            "return a proposal with evidence and confidence"
+          ]
+        },
+        {
+          "id": "shared_workspace",
+          "title": "Shared Deliberation Workspace",
+          "purpose": "Compare proposals and resolve conflicts without hiding their sources.",
+          "components": [
+            "evidence board",
+            "conflict map",
+            "proposal aggregator"
+          ],
+          "steps": [
+            "mark support, agreement, and conflict",
+            "merge compatible proposals with provenance"
+          ]
+        },
+        {
+          "id": "answer_verifier",
+          "title": "Answer Verifier",
+          "purpose": "Apply consistency, evidence, and stopping checks.",
+          "components": [
+            "consistency checker",
+            "evidence checker",
+            "reroute and answer gate"
+          ],
+          "steps": [
+            "check the merged proposal",
+            "answer, or reroute one unresolved subproblem once"
+          ]
+        }
+      ],
+      "flow": [
+        "The Cognitive Meta-controller outputs subproblem-to-reasoner assignments and round budgets.",
+        "The Specialized Reasoner Pool writes evidence-bearing proposals to the Shared Deliberation Workspace for conflict-aware aggregation.",
+        "The Answer Verifier returns the answer if checks pass; otherwise it reroutes one unresolved subproblem once before stopping."
+      ],
+      "prompt": "METHOD OVERVIEW\nA meta-controller splits a problem and routes each part to analytic, retrieval, tool/simulation, or reflective reasoners; a shared workspace combines sourced proposals, and a verifier permits one targeted reroute before answering.\n\nREQUIRED MODULES\n1. Cognitive Meta-controller: Decompose the problem and assign compute-limited reasoning routes. Components: subproblem decomposer, reasoner gate, compute scheduler.\n2. Specialized Reasoner Pool: Produce complementary proposals for routed subproblems. Components: analytic reasoner, retrieval reasoner, tool/simulation and reflective reasoners.\n3. Shared Deliberation Workspace: Compare proposals and resolve conflicts without hiding their sources. Components: evidence board, conflict map, proposal aggregator.\n4. Answer Verifier: Apply consistency, evidence, and stopping checks. Components: consistency checker, evidence checker, reroute and answer gate.\n\nMODULE INTERNALS AND STEPS\nCognitive Meta-controller: form subproblems and estimate their demands -> output reasoner assignments and round budgets.\nSpecialized Reasoner Pool: run each assigned reasoner -> return a proposal with evidence and confidence.\nShared Deliberation Workspace: mark support, agreement, and conflict -> merge compatible proposals with provenance.\nAnswer Verifier: check the merged proposal -> answer, or reroute one unresolved subproblem once.\n\nEND-TO-END METHOD\n1. The Cognitive Meta-controller outputs subproblem-to-reasoner assignments and round budgets.\n2. The Specialized Reasoner Pool writes evidence-bearing proposals to the Shared Deliberation Workspace for conflict-aware aggregation.\n3. The Answer Verifier returns the answer if checks pass; otherwise it reroutes one unresolved subproblem once before stopping.",
+      "requirements": [
+        "Output explicit subproblem routes and reasoning-round budgets.",
+        "Use analytic, retrieval, tool/simulation, and reflective reasoning capabilities.",
+        "Aggregate proposals while preserving evidence, confidence, and conflicts.",
+        "Require consistency and evidence checks, with at most one targeted reroute."
+      ],
+      "cardSummary": "This system sends each reasoning challenge to a suitable specialist, combines their evidence, and checks the result."
+    }
+  ]
+}

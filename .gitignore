@@ -1,0 +1,65 @@
+# Credentials and machine configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.netrc
+.npmrc
+.aws/
+.ssh/
+.codex/
+.agents/
+.cursor/
+.idea/
+.vscode/
+
+# Dependencies, builds, and caches
+node_modules/
+.next/
+.next-build/
+dist/
+build/
+coverage/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+*.egg-info/
+*.py[cod]
+*.tsbuildinfo
+.DS_Store
+._*
+.ipynb_checkpoints/
+*.log
+
+# Local datasets and model/index artifacts
+/frontend/datasets/
+/frontend/test_pics/
+/frontend/public/models/
+/backend/data/indices/*
+!/backend/data/indices/.gitkeep
+
+# Participant data, recordings, generated figures, and local exports
+study_logs/
+baseline_study_logs/
+/formative study/
+/IRB_*/
+/deliverables/
+/output/
+/tmp/
+/assets/
+/.hifigure-ppt-build/
+/figure-studio/
+/visual-composer/
+/docs/paper/
+/docs/user-study/word/
+.shots/
+.tour-shots/
+*.docx
+*.pptx
+*.mp4
+*.mov

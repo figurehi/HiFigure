@@ -1,0 +1,342 @@
+.taskDetails,
+.advancedSearch,
+.sourceChooser,
+.advancedTools,
+.advancedCollection {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+.taskDetails {
+  align-self: stretch;
+  grid-column: 1 / -1;
+}
+
+.taskSummary,
+.advancedSearch > summary,
+.sourceChooser > summary,
+.advancedTools > summary,
+.advancedCollection > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 11px;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  list-style: none;
+}
+
+.taskSummary::-webkit-details-marker,
+.advancedSearch > summary::-webkit-details-marker,
+.sourceChooser > summary::-webkit-details-marker,
+.advancedTools > summary::-webkit-details-marker,
+.advancedCollection > summary::-webkit-details-marker {
+  display: none;
+}
+
+.taskSummary::after,
+.advancedSearch > summary::after,
+.sourceChooser > summary::after,
+.advancedTools > summary::after,
+.advancedCollection > summary::after {
+  content: "+";
+  flex: 0 0 auto;
+  color: var(--ink-muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.taskDetails[open] > .taskSummary::after,
+.advancedSearch[open] > summary::after,
+.sourceChooser[open] > summary::after,
+.advancedTools[open] > summary::after,
+.advancedCollection[open] > summary::after {
+  content: "−";
+}
+
+.taskSummaryCopy,
+.sourceSummaryCopy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.taskSummaryCopy strong,
+.sourceSummaryCopy strong {
+  overflow: hidden;
+  color: var(--ink-strong);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskBody {
+  display: grid;
+  gap: 8px;
+  padding: 0 11px 11px;
+  color: var(--ink-muted);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+.taskBody p {
+  margin: 0;
+}
+
+.taskBody ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.promptPrimary {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 14px;
+}
+
+.promptPrimary > label {
+  width: 100%;
+  min-width: 0;
+}
+
+.promptPrimary textarea {
+  width: 100%;
+  min-height: 320px;
+  box-sizing: border-box;
+}
+
+.advancedSearch {
+  grid-column: 1 / -1;
+}
+
+.advancedSearchBody {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.55fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 0 11px 11px;
+}
+
+.advancedSearchBody > :only-child {
+  grid-column: 1 / -1;
+}
+
+.sourceChooser {
+  display: block;
+  min-height: 0;
+  padding: 0 !important;
+  overflow: visible !important;
+  box-shadow: none !important;
+}
+
+.sourceChooser > summary {
+  min-height: 44px;
+}
+
+.sourceSummaryCopy span {
+  overflow: hidden;
+  max-width: min(72vw, 720px);
+  color: var(--ink-muted);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sourceList {
+  max-height: 132px;
+  padding: 0 10px 10px !important;
+}
+
+.sourceList article {
+  min-height: 66px !important;
+}
+
+.sourceList article img {
+  max-height: 52px;
+}
+
+.advancedTools {
+  position: relative;
+  min-width: 174px;
+  background: var(--surface);
+}
+
+.advancedToolActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 9px 9px;
+}
+
+.advancedCollection {
+  background: transparent;
+}
+
+.advancedCollection > summary {
+  color: var(--ink-muted);
+}
+
+.advancedCollectionBody {
+  display: grid;
+  gap: 10px;
+  padding: 0 9px 9px;
+}
+
+.collectionScope {
+  margin: 0;
+  padding: 8px 10px;
+  border-left: 2px solid var(--rule-strong);
+  color: var(--ink-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.collectionSummary {
+  position: relative;
+}
+
+.primaryTabs {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+.styleQuickPanel,
+.quickChoiceGroup {
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  background: var(--surface);
+}
+
+.styleQuickPanel {
+  display: grid;
+  gap: 8px;
+  padding: 11px;
+}
+
+.styleQuickPanel p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.styleQuickHeader,
+.styleQuickActions,
+.styleConfirmBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.styleQuickHeader > span:first-child {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.styleQuickHeader small {
+  color: var(--accent);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.styleQuickHeader strong {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.styleQuickActions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.quickChoiceGroup {
+  padding: 12px;
+}
+
+.styleConfirmBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 6;
+  flex: 0 0 auto;
+  padding: 10px 12px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 -8px 24px rgba(24, 30, 48, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.styleConfirmBar span {
+  color: var(--ink-muted);
+  font-size: 11px;
+}
+
+@media (max-width: 900px) {
+  .promptPrimary,
+  .advancedSearchBody {
+    grid-template-columns: 1fr;
+  }
+
+  .promptPrimary button {
+    width: 100%;
+  }
+
+  .advancedTools {
+    min-width: 0;
+  }
+
+  .styleConfirmBar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+.studyRetrievalGrid {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.studyRetrievalFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.studyRetrievalFooter > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.studyRetrievalFooter strong {
+  font-size: 12px;
+}
+
+.studyRetrievalFooter span {
+  color: var(--ink-muted);
+  font-size: 10px;
+}
+
+@media (max-width: 680px) {
+  .studyRetrievalFooter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

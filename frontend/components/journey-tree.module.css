@@ -1,0 +1,976 @@
+.wrap {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.toolbarLead {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.rootChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rootChip {
+  padding: 5px 13px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--ink-muted);
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.rootChipActive {
+  border-color: var(--ink-strong);
+  background: var(--ink-strong);
+  color: #fff;
+}
+
+.singleRoot {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.legendNote {
+  color: var(--ink-muted);
+  font-size: 11px;
+}
+
+.canvas {
+  flex: 1 1 auto;
+  min-height: 220px;
+  overflow: auto;
+  padding: 22px 20px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--paper-tint);
+}
+
+.cardMain {
+  display: grid;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cardMain:disabled {
+  cursor: default;
+}
+
+.traceToggle {
+  justify-self: stretch;
+  padding: 4px 8px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--ink-muted);
+  font-size: 9.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    color var(--duration-ui) var(--ease-out),
+    border-color var(--duration-ui) var(--ease-out);
+}
+
+.traceToggle:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.traceToggle:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.traceToggleActive {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+/* The decision this step made, stated before its evidence. */
+.changeLead {
+  margin: 0;
+  padding-top: 7px;
+  border-top: 1px dashed var(--rule);
+  color: var(--ink-strong);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.changeLeadOrigin {
+  color: var(--ink-muted);
+}
+
+/* The Layout renderer ships its own frame and a wide minimum width, neither of
+   which suits a storyboard tile. */
+.planPreview {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.planPreview :global(.layout-png-preview) {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: none;
+}
+
+.planPreview :global(.layout-png-preview-frame) {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  place-items: center;
+  overflow: hidden;
+  padding: 0;
+  background: none;
+}
+
+.planPreview :global(.layout-png-preview-media) {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  place-items: center;
+}
+
+.planPreview :global(.layout-png-preview-frame img) {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  border: 0;
+  box-shadow: none;
+  object-fit: contain;
+}
+
+.heroEmpty {
+  color: var(--ink-faint);
+  font-size: 10px;
+  font-style: italic;
+}
+
+.tile {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 4px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  cursor: zoom-in;
+}
+
+.tile:hover {
+  border-color: var(--accent);
+}
+
+.tile:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tileText {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ink-muted);
+  font-size: 9.5px;
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 5;
+}
+
+.tileFont {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.tileSwatches {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+}
+
+.tileSwatches i {
+  border-radius: 2px;
+}
+
+.tileIcons {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(2, 1fr);
+  place-items: center;
+  gap: 1px;
+}
+
+.tileIcons img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tileCaption {
+  color: var(--ink-muted);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.tileNote {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--ink-faint);
+  font-size: 10px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardDetail {
+  display: grid;
+  gap: 10px;
+  max-height: 340px;
+  padding: 8px 2px 2px;
+  border-top: 1px dashed var(--rule);
+  overflow: auto;
+}
+
+.detailSection {
+  display: grid;
+  gap: 8px;
+  padding-inline: 2px;
+}
+
+.detailSection h3 {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.detailRows {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.detailRow {
+  display: grid;
+  gap: 2px;
+}
+
+.detailRow dt {
+  color: var(--ink-muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.detailRow dd {
+  margin: 0;
+  color: var(--ink-strong);
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.detailEmpty {
+  color: var(--ink-faint);
+  font-style: italic;
+}
+
+.detailList {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.detailList li {
+  margin: 0 0 2px;
+}
+
+.swatchRow {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.swatch {
+  width: 16px;
+  height: 16px;
+  border: 1px solid rgb(0 0 0 / 12%);
+  border-radius: 4px;
+}
+
+.swatchRow small {
+  color: var(--ink-muted);
+  font-size: 10px;
+}
+
+.cardSelected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.kindRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.kind {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.kind_root {
+  background: var(--ink-strong);
+  color: #fff;
+}
+
+.kind_checkpoint {
+  border: 1px solid var(--rule);
+  background: var(--surface-soft);
+  color: var(--ink-muted);
+}
+
+.kind_skeleton {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.kind_candidate {
+  background: var(--accent);
+  color: #fff;
+}
+
+.kind_edit {
+  background: color-mix(in srgb, var(--modify) 16%, #fff);
+  color: var(--modify);
+}
+
+.time {
+  color: var(--ink-faint);
+  font-size: 9.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.title {
+  overflow: hidden;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chips span {
+  padding: 2px 7px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--ink-muted);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.chips .chipActive {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--rule));
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.chips .chipDeleted {
+  border-color: color-mix(in srgb, var(--danger) 38%, var(--rule));
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.empty {
+  display: grid;
+  gap: 6px;
+  place-content: center;
+  min-height: 260px;
+  text-align: center;
+}
+
+.empty p {
+  margin: 0;
+  color: var(--ink-muted);
+  font-size: 12.5px;
+}
+
+.phase_envision {
+  border-left-color: color-mix(in srgb, var(--accent) 60%, var(--rule));
+}
+
+.phase_externalize {
+  border-left-color: color-mix(in srgb, var(--include) 60%, var(--rule));
+}
+
+.phase_evolve {
+  border-left-color: color-mix(in srgb, var(--modify) 55%, var(--rule));
+}
+
+
+/* One band per generation, stacked newest-last down the page. */
+.runs {
+  display: grid;
+  gap: 16px;
+  width: max-content;
+  min-width: 100%;
+}
+
+.runBatch {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--rule);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.runBatchHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.runRestore {
+  margin-left: auto;
+  padding: 3px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.runRestore:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.runRestore:disabled {
+  color: var(--ink-muted);
+  cursor: default;
+}
+
+.runBadge {
+  color: var(--ink-strong);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.runBatchHead time {
+  color: var(--ink-faint);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.runPending {
+  color: var(--ink-faint);
+  font-size: 10px;
+  font-style: italic;
+}
+
+/* Prompt fans into three tracks, then those tracks gather into the figures. */
+.flow {
+  display: flex;
+  align-items: center;
+  width: max-content;
+}
+
+.origin,
+.outcome {
+  display: grid;
+  position: relative;
+  gap: 8px;
+  align-content: center;
+}
+
+.origin {
+  margin-right: 36px;
+}
+
+.outcome {
+  margin-left: 36px;
+}
+
+.origin::after,
+.outcome::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 36px;
+  height: 2px;
+  background: var(--rule-strong);
+}
+
+.origin::after {
+  left: 100%;
+}
+
+.outcome::before {
+  right: 100%;
+}
+
+.fan {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 32px;
+  padding: 4px 0;
+}
+
+.trackRow {
+  display: flex;
+  align-items: stretch;
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  flex: none;
+}
+
+.fork,
+.gather {
+  position: relative;
+  flex: none;
+  width: 40px;
+}
+
+/* Tracks differ in length, so the gather side stretches to keep every run's
+   vertical bus in one column instead of a staircase. */
+.gather {
+  flex: 1 0 40px;
+}
+
+.fork::before,
+.gather::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  left: 0;
+  top: 50%;
+  height: 2px;
+  background: var(--rule-strong);
+}
+
+.fork::after,
+.gather::after {
+  content: "";
+  position: absolute;
+  top: -18px;
+  bottom: -18px;
+  width: 2px;
+  background: var(--rule-strong);
+}
+
+.fork::after {
+  left: 0;
+}
+
+.gather::after {
+  right: 0;
+}
+
+.trackRow:first-child .fork::after,
+.trackRow:first-child .gather::after {
+  top: 50%;
+}
+
+.trackRow:last-child .fork::after,
+.trackRow:last-child .gather::after {
+  bottom: 50%;
+}
+
+.trackRow:only-child .fork::after,
+.trackRow:only-child .gather::after {
+  display: none;
+}
+
+.trackRow .track {
+  position: relative;
+}
+
+.link {
+  position: relative;
+  flex: none;
+  width: 28px;
+  height: 2px;
+  background: var(--rule-strong);
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -1px;
+  border: 5px solid transparent;
+  border-left-color: var(--rule-strong);
+  border-right-width: 0;
+  background: none;
+  transform: translateY(-50%);
+}
+
+.trackRow .track::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -6px;
+  border: 5px solid transparent;
+  border-left-color: var(--rule-strong);
+  border-right-width: 0;
+  transform: translateY(-50%);
+}
+
+.outcome::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -7px;
+  border: 5px solid transparent;
+  border-left-color: var(--rule-strong);
+  border-right-width: 0;
+  transform: translateY(-50%);
+}
+
+.stage,
+.origin,
+.outcome {
+  min-width: 0;
+}
+
+.stageLabel {
+  color: var(--ink-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.stageCards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stageEmpty {
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: 11px;
+  font-style: italic;
+}
+
+.flowCard {
+  display: grid;
+  width: 152px;
+  justify-items: center;
+  gap: 4px;
+}
+
+/* Carried over from an earlier run: present, but not this run's decision. */
+.flowCardReused .tile {
+  border-style: dashed;
+  background: var(--surface-soft);
+}
+
+.flowCardReused .tile > * {
+  opacity: 0.62;
+}
+
+.reusedTag {
+  margin-left: 4px;
+  color: var(--ink-faint);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.origin .flowCard {
+  width: 236px;
+}
+
+.origin .tile {
+  width: 236px;
+  height: 182px;
+  padding: 10px;
+}
+
+.stage .tile {
+  width: 148px;
+  height: 112px;
+}
+
+.flowPrompt {
+  display: -webkit-box;
+  overflow: hidden;
+  align-self: start;
+  color: var(--ink-strong);
+  font-size: 12px;
+  line-height: 1.45;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+}
+
+.candidateColumn {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.figureCard {
+  display: grid;
+  gap: 7px;
+  width: 288px;
+  padding: 10px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgb(22 31 42 / 4%);
+}
+
+/* The figure the run produced, before any edit was drawn on it. */
+.figureBase {
+  border-color: color-mix(in srgb, var(--accent) 32%, var(--rule));
+}
+
+.heroWrap {
+  display: block;
+  position: relative;
+}
+
+.figureHero {
+  display: grid;
+  width: 100%;
+  height: 208px;
+  place-items: center;
+  overflow: hidden;
+  padding: 6px;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.figureHero:disabled {
+  cursor: default;
+}
+
+.figureHero img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Enlarging is separate from restoring, so reading a run never changes it. */
+.heroZoom {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--rule);
+  border-radius: 7px;
+  background: rgb(255 255 255 / 88%);
+  color: var(--ink-muted);
+  font-size: 13px;
+  line-height: 1;
+  opacity: 0;
+  cursor: zoom-in;
+  transition: opacity 120ms var(--ease-out);
+}
+
+.heroWrap:hover .heroZoom,
+.heroZoom:focus-visible {
+  opacity: 1;
+}
+
+.figureEdit {
+  width: 256px;
+}
+
+.figureEdit .figureHero {
+  height: 176px;
+}
+
+.figureDeleted {
+  border-color: color-mix(in srgb, var(--danger) 38%, var(--rule));
+  border-style: dashed;
+  background: color-mix(in srgb, var(--danger-soft) 48%, var(--surface));
+}
+
+.figureDeleted .figureHero img {
+  opacity: 0.58;
+  filter: grayscale(0.45);
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 40px;
+  background: rgb(15 23 42 / 55%);
+}
+
+.lightboxPanel {
+  display: grid;
+  gap: 12px;
+  grid-template-rows: auto minmax(0, 1fr);
+  max-width: min(1120px, 92vw);
+  max-height: 88vh;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--surface);
+  box-shadow: 0 24px 60px rgb(15 23 42 / 28%);
+}
+
+.lightboxHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lightboxHead > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.lightboxHead strong {
+  font-size: 14px;
+}
+
+.lightboxClose {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: var(--surface-soft);
+  color: var(--ink-muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightboxBody {
+  display: grid;
+  min-height: 0;
+  place-items: center;
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.lightboxBody img {
+  max-width: 100%;
+  max-height: 74vh;
+  object-fit: contain;
+}
+
+.lightboxBody .planPreview {
+  width: min(1000px, 86vw);
+  height: min(700px, 72vh);
+}
+
+.lightboxBody .flowPrompt {
+  display: block;
+  overflow: visible;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-line-clamp: unset;
+}
+
+.lightboxBody .tileText {
+  display: block;
+  overflow: visible;
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-line-clamp: unset;
+}
+
+.lightboxBody .tileIcons,
+.lightboxBody .tileSwatches {
+  width: min(520px, 78vw);
+  height: min(360px, 52vh);
+  gap: 10px;
+}
+
+.lightboxBody .tileFont {
+  font-size: 128px;
+}
