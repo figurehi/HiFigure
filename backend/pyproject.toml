@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hifigure-backend"
+version = "0.1.0"
+description = "FastAPI backend for hifigure"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115.12",
+  "uvicorn[standard]>=0.34.2",
+  "pydantic>=2.11.4",
+  "httpx>=0.28.1",
+  "openai>=1.76.0",
+  "python-dotenv>=1.0.1",
+  "Pillow>=10.4.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]

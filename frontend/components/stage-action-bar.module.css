@@ -1,0 +1,63 @@
+.bar {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: auto;
+  padding: 10px 14px;
+  border-top: 1px solid var(--rule-strong);
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 -8px 24px rgba(24, 30, 48, 0.08);
+  backdrop-filter: blur(10px);
+}
+
+.sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 6;
+}
+
+.meta {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+  color: var(--ink-muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.meta strong {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.actions :global(.btn-primary) {
+  min-width: 168px;
+}
+
+@media (max-width: 680px) {
+  .bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .actions :global(.btn) {
+    width: 100%;
+  }
+}
